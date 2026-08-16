@@ -1,0 +1,45 @@
+// Mirrors the old rofi powermenu (adi1090x):
+//   background-normal   rgba(26, 8, 8, 65%)   — same maroon as kitty's #1a0808
+//   background-selected rgba(173, 42, 48, 1)  — same as $accent / Hyprland's active border
+//   element-border-radius 100%, columns 5, lines 1
+
+$pm_bg: rgba(26, 8, 8, 0.92);
+$pm_size: 92px;
+
+// Deviation from the rofi original: its `background-window: black/5%` leaves the
+// buttons illegible against a bright wallpaper. Dimming harder is what makes this
+// read as a modal; the button and accent colours are unchanged.
+.pm-overlay {
+  background-color: transparentize(black, 0.45);
+}
+
+.pm-message {
+  background-color: $pm_bg;
+  color: $fg_color;
+  border-radius: 999px;
+  padding: 15px 40px;
+  font-size: 16px;
+}
+
+.pm-btn {
+  background-color: $pm_bg;
+  color: $fg_color;
+  border-radius: 999px;
+  min-width: $pm_size;
+  min-height: $pm_size;
+  box-shadow: inset 0 0 0 $border_width $border_color;
+
+  &:hover {
+    background-color: $accent;
+    color: white;
+  }
+
+  &:active {
+    background-color: $accent;
+    color: $accent_fg;
+  }
+}
+
+.pm-icon {
+  font-size: 30px;
+}

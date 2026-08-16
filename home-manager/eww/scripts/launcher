@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Dispatcher for eww widget actions.
+#
+# Rewritten 2026-08-14: the upstream version targeted a different machine —
+# it shelled into a distrobox named "Arch" and called rog-control-center,
+# blueberry, wl-gammactl, gtklock and hyprshot, none of which exist here.
+
+EWW="${EWW_CMD:-eww}"
+CFG="${EWW_CONFIG_DIR:-$HOME/.config/eww}"
+
+# eww identifies monitors by GDK model name, which Hyprland exposes verbatim as
+# .model — so the focused display resolves without any hardcoded mapping.
+function focused_model {
+    hyprctl monitors -j 2>/dev/null | jq -r 'first(.[] | select(.focused) | .model) // empty'
+}
+
+# Toggle a window on the *focused* monitor. Prefers a bare name (single-instance
+# windows such as powermenu); falls back to the per-monitor form (quicksettings0/1).
+function toggle_menu {
+    local base=$1 win=""
+    local mon; mon=$($EWW get main_monitor 2>/dev/null || echo 0)
+
+    if $EWW list-windows 2>/dev/null | grep -qx "$base"; then
+        win="$base"
+    elif $EWW list-windows 2>/dev/null | grep -qx "${base}${mon}"; then
+        win="${base}${mon}"
+    else
+        notify-send "eww" "No such window: $base"
+        return 1
+    fi
+
+    if $EWW active-windows 2>/dev/null | grep -q "^${win}:"; then
+        $EWW close "$win"
+        return
+    fi
+
+    local screen; screen=$(focused_model)
+    if [[ -n $screen ]]; then
+        $EWW open "$win" --screen "$screen"
+    else
+        $EWW open "$win"          # no focused monitor resolvable; use the pinned one
+    fi
+}
+
+function close_menu {
+    $EWW close "$1$($EWW get main_monitor 2>/dev/null || echo 0)" 2>/dev/null
+}
+
+function picker {
+    local color
+    color=$(hyprpicker -n | grep '#') || return
+    wl-copy --trim-newline "$color"
+    notify-send -i color-select-symbolic -a "Color Picker" "$color"
+}
+
+# Notification centre: swaync when it owns the bus, dunst otherwise.
+function notifications {
+    if pgrep -x swaync >/dev/null 2>&1; then
+        swaync-client -t
+    elif pgrep -x dunst >/dev/null 2>&1; then
+        dunstctl history-pop
+    else
+        notify-send "eww" "No notification daemon running"
+    fi
+}
+
+function screenshot {
+    if [[ $1 == 'screen' ]]; then
+        grimblast --notify copysave output
+    else
+        grimblast --freeze --notify copysave area
+    fi
+}
+
+case "$1" in
+    toggle_menu)   toggle_menu "$2" ;;
+    close_menu)    close_menu   "$2" ;;
+    colorpicker)   picker ;;
+    picker)        picker ;;
+    notifications) notifications ;;
+    screenshot)    screenshot "$2" ;;
+    screenlock)    close_menu powermenu; loginctl lock-session ;;
+    applauncher)   vicinae toggle ;;
+    pavu)          pavucontrol ;;
+    config)        kitty -e nvim "$HOME/.config/hypr" ;;
+    *)             echo "usage: $(basename "$0") {toggle_menu|close_menu|colorpicker|notifications|screenshot|screenlock|applauncher|pavu|config}" >&2
+                   exit 1 ;;
+esac

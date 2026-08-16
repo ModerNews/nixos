@@ -1,0 +1,226 @@
+## ░█▀▀░▀█▀░█▀█░█▀▄░█▀▀░█░█░▀█▀░█▀█
+## ░▀▀█░░█░░█▀█░█▀▄░▀▀█░█▀█░░█░░█▀▀
+## ░▀▀▀░░▀░░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░░
+## CROSS-SHELL PROMPT
+## The minimal, blazing-fast, and infinitely customizable prompt for any shell!
+
+format = """
+$hostname\
+$directory\
+
+$localip\
+$shlvl\
+$singularity\
+$vcsh\
+$hg_branch\
+$custom\
+
+$sudo\
+
+$character"""
+
+right_format = """
+${custom.git_branch}\
+$golang\
+$rust\
+$python\
+$nodejs\
+$terraform\
+$helm\
+$kubernetes\
+$cmd_duration\
+$jobs\
+$status\
+$os\
+$container\
+"""
+
+# Second param
+[hostname]
+ssh_only = true
+format = "[](fg:#252525 bg:none)[$hostname]($style)[█](fg:#232526 bg:#232526)[](#d83e4a bg:#252525)[ ](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none) "
+disabled = false
+style = "fg:#E8E3E3 bg:#252525 bold"
+
+# Third param
+[directory]
+format = "[](fg:#252525 bg:none)[$path]($style)[█](fg:#232526 bg:#232526)[](#d83e4a bg:#252525)[ ](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+truncation_length = 3
+truncate_to_repo=false
+read_only = " "
+
+## SECOND LINE/ROW: Prompt
+# Prompt: param 2 └─
+[character]
+success_symbol = "[ >](#d83e4a bold)"
+error_symbol = "[ >](#f36630 bold)"
+
+[cmd_duration]
+min_time = 1
+format = " [](fg:#252525 bg:none)[$duration]($style)[](fg:#252525 bg:#252525)[](fg:#f36630 bg:#252525)[󱑂 ](fg:#252525 bg:#f36630)[](fg:#f36630 bg:none)"
+disabled = false
+style = "fg:#E8E3E3 bg:#252525 bold"
+
+
+[custom.git_branch]
+command = 'b=$(git branch --show-current 2>/dev/null); d=""; [ -n "$(git status --porcelain 2>/dev/null)" ] && d="*"; s=""; ab=$(git rev-list --left-right --count "@{upstream}...HEAD" 2>/dev/null); if [ -n "$ab" ]; then behind=$(echo "$ab" | cut -f1); ahead=$(echo "$ab" | cut -f2); if [ "$ahead" -gt 0 ] && [ "$behind" -gt 0 ]; then s="↕"; elif [ "$ahead" -gt 0 ]; then s="↑"; elif [ "$behind" -gt 0 ]; then s="↓"; fi; fi; sep=""; [ -n "$d" ] && [ -n "$s" ] && sep=" "; echo "$b$d$sep$s"'
+when = "true"
+require_repo = true
+format = " [](fg:#252525 bg:none)[$output]($style)[](fg:#252525 bg:#252525)[](fg:#81C19B bg:#252525)[](fg:#252525 bg:#81C19B)[](fg:#81C19B bg:none)"
+style = "fg:#E8E3E3 bg:#252525"
+
+[kubernetes]
+disabled = false
+detect_env_vars = ["KUBIE_ACTIVE"]
+symbol = "☸"
+format = " [](fg:#252525 bg:none)[$context( ($namespace))]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[$symbol](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+
+[[kubernetes.contexts]]
+context_pattern = "^\\[device\\] (?P<cluster>[\\w-]+)\\..*$"
+style = "fg:#f36630 bg:#252525 bold"
+context_alias = "$cluster"
+
+[[kubernetes.contexts]]
+context_pattern = "(?P<cluster>[\\w-]+)\\..*"
+user_pattern = ".*oidc.*"
+style = "fg:#E8E3E3 bg:#252525 bold"
+context_alias = "$cluster"
+
+[[kubernetes.contexts]]
+context_pattern = "(?P<cluster>[\\w-]+)\\..*"
+user_pattern = ".*"
+style = "fg:#d83e4a bg:#252525 bold"
+context_alias = "$cluster"
+
+[[kubernetes.contexts]]
+context_pattern = "^\\[device\\] .*$"
+style = "fg:#f36630 bg:#252525 bold"
+
+[[kubernetes.contexts]]
+context_pattern = ".*"
+user_pattern = ".*oidc.*"
+style = "fg:#E8E3E3 bg:#252525 bold"
+
+[[kubernetes.contexts]]
+context_pattern = ".*"
+user_pattern = ".*"
+style = "fg:#d83e4a bg:#252525 bold"
+
+# =======
+# SYMBOLS
+# =======
+
+[aws]
+symbol = "  "
+
+[conda]
+symbol = " "
+
+[dart]
+symbol = " "
+
+[docker_context]
+disabled = true
+
+[elixir]
+symbol = " "
+
+[elm]
+symbol = " "
+
+[golang]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+disabled = false
+
+[hg_branch]
+symbol = " "
+
+[java]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+disabled = true
+
+[julia]
+symbol = " "
+
+[haskell]
+symbol = "λ "
+
+[memory_usage]
+symbol = " "
+
+[nim]
+symbol = " "
+
+[nix_shell]
+symbol = " "
+
+[package]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525"
+disabled = true
+
+
+[perl]
+symbol = " "
+
+[php]
+symbol = " "
+
+[python]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+pyenv_prefix = "venv "
+python_binary = ["./venv/bin/python", "python", "python3", "python2"]
+detect_extensions = ["py"]
+version_format = "v${raw}"
+disabled = false
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+disabled = false
+
+[scala]
+symbol = " "
+
+[maven]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+disabled = true
+
+[terraform]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+disabled = false
+
+[helm]
+symbol = "⎈"
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[⎈](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+disabled = false
+
+[shlvl]
+symbol = " "
+
+[swift]
+symbol = "ﯣ "
+
+[nodejs]
+symbol = ""
+format = " [](fg:#252525 bg:none)[$version]($style)[](fg:#252525 bg:#252525)[](fg:#d83e4a bg:#252525)[](fg:#252525 bg:#d83e4a)[](fg:#d83e4a bg:none)"
+style = "fg:#E8E3E3 bg:#252525 bold"
+disabled = false

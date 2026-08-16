@@ -1,0 +1,17 @@
+*.dec
+*.dec.*
+*.decrypted
+secrets/*.plain*
+secrets/*.dec*
+
+# age / ssh private keys, if one ever lands here by accident
+*.age
+age.key
+keys.txt
+id_ed25519
+id_rsa
+
+# build artefacts
+result
+result-*
+.direnv/

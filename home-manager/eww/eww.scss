@@ -1,0 +1,14 @@
+* {
+    all: unset;
+    font-size: 14px;
+    font-family: 'JetBrainsMono Nerd Font';
+    transition: 200ms;
+}
+$mono_font: 'mononoki NF';
+
+@import "./scss/colors.scss";
+@import "./scss/variables.scss";
+@import "./scss/common.scss";
+@import "./scss/panel.scss";
+@import "./scss/powermenu.scss";
+tooltip{ @include tooltip }

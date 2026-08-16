@@ -1,0 +1,225 @@
+.panel {
+  min-height: 2.2em;
+  border-radius: $panel_radius;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: $fg_color;
+  text-shadow: $text_shadow;
+  margin-bottom: 10px;
+
+  background-color: transparent;
+
+  /* .barBorder { */
+  /*   background: linear-gradient(45deg, #8B1E3F, #D65237, #FF6B47); */
+  /*   border-radius: 12px; */
+  /*   padding: 2px; // Border thickness */
+  /**/
+  /*   .bar { */
+  /*     &.systray { */
+  /*       padding: 0 13px; */
+  /*     } */
+  /**/
+  /*     background-color: rgba(26, 8, 8, 0.65); */
+  /*     border-radius: 10px; */
+  /*     padding: 0 4px; */
+  /*   } */
+  /* } */
+
+  .spacer {
+    min-width: 5.1em;
+    min-height: 1em;
+  }
+
+  .bar {
+    &:first-child {
+      margin-left: 8px;
+    }
+
+    &:last-child {
+      margin-right: 8px;
+    }
+
+    margin: 0;
+    margin-top: 4px;
+    background-color: rgba(26, 8, 8, 0.65);
+    border: 2px solid rgba(173, 42, 48, 0.933);
+    border-radius: 10px;
+    padding: 0 4px;
+  }
+
+  .button-bin {
+    /* box-shadow: inset 0 0 0 $border_width $border_color; */
+    /* background-color: red; */
+    /* background-color: rgba(238, 238, 238, 0.08); */
+    border-radius: $panel_button_radius;
+    margin: 3px 2px;
+
+    &.workspaces {
+      background-color: unset;
+    }
+
+    &.launcher {
+      margin-left: 4px
+    }
+
+    &.powermenu {
+      margin-right: 4px
+    }
+
+    &.volume {
+      min-width: 1em;
+    }
+
+    &.systray {
+      padding: 0;
+    }
+
+    .system-indicators {
+      padding-left: 0.4em;
+    }
+  }
+
+  .button {
+    .icon {
+      font-size: 1.2em;
+    }
+
+    @include button($flat: true, $radii: $panel_button_radius);
+
+    >.icon {
+      margin-left: -0.25em;
+    }
+
+    >* {
+      padding: 0 .7em
+    }
+
+    &.launcher {
+      color: $blue;
+    }
+
+    &.powermenu {
+      color: $red;
+    }
+
+    &.window {
+      @include button($flat: true, $interactive: false)
+    }
+
+    &.workspaces {
+      @include button($flat: false, $radii: $panel_button_radius);
+      background-color: unset;
+
+      .horizontal {
+        &:first-child {
+          margin-left: -0.3em;
+        }
+      }
+
+      .workspace-btn {
+        label {
+          font-size: 1.2em;
+          margin-left: 0.4em;
+        }
+
+        margin: 2px;
+
+        &.empty {
+          color: transparentize($fg_color, 0.34);
+        }
+
+        &.occupied {
+          color: transparentize($fg_color, 0.18);
+        }
+
+        &.active {
+          color: $fg_color;
+        }
+
+        &:hover {
+          &.empty {
+            color: transparentize($fg_color, 0.18);
+          }
+
+          &.occupied {
+            color: $fg_color;
+          }
+        }
+
+        &:active {
+          color: $accent;
+        }
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0.6em;
+        }
+      }
+    }
+
+    &.system-indicators {
+      .icon {
+        font-size: 1.3em;
+      }
+
+      .battery {
+        .low {
+          color: $destructive;
+        }
+
+        .charging {
+          color: $succes;
+        }
+
+        .charged {
+          color: $succes;
+        }
+      }
+    }
+
+    &.media {
+      .icon {
+        margin-right: .2em;
+
+        &.spotify {
+          color: $green;
+        }
+
+        &.firefox\.instance2 {
+          color: $orange;
+        }
+
+        &.mpv {
+          color: $magenta;
+        }
+      }
+    }
+  }
+
+  .sliders-bin {
+    &.volume {
+      min-width: 220px;
+    }
+
+    margin-right: 4px;
+
+    .slider {
+      @include slider($width: 1.2em, $slider: false);
+
+      .icon {
+        margin-left: 6px;
+        color: $accent_fg;
+      }
+    }
+
+    .separator {
+      min-width: 2px;
+      min-height: 1em;
+      margin: 0 4px;
+      background-color: $fg_color;
+    }
+  }
+}

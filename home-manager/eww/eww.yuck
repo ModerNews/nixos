@@ -1,0 +1,7 @@
+(defvar main_monitor 1)
+(defvar number_of_workspaces 10)
+
+(include "./yuck/vars.yuck")
+(include "./yuck/panel.yuck")
+(include "./yuck/powermenu.yuck")
+(include "./yuck/windows.yuck")

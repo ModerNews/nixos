@@ -1,0 +1,23 @@
+" Special
+let wallpaper  = "/home/gruzin/Documents/Wallpaper.png"
+let background = "#1f1b2d"
+let foreground = "#edc8de"
+let cursor     = "#edc8de"
+
+" Colors
+let color0  = "#1f1b2d"
+let color1  = "#A162A1"
+let color2  = "#E165A7"
+let color3  = "#2CA0CB"
+let color4  = "#5DA3CE"
+let color5  = "#E79AB0"
+let color6  = "#C2B3B4"
+let color7  = "#edc8de"
+let color8  = "#a58c9b"
+let color9  = "#A162A1"
+let color10 = "#E165A7"
+let yellow = "#2CA0CB"
+let color12 = "#5DA3CE"
+let color13 = "#E79AB0"
+let color14 = "#C2B3B4"
+let color15 = "#edc8de"

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+spaces(){
+	WORKSPACE_WINDOWS=$(hyprctl workspaces -j | jq 'map({key: .id | tostring, value: .windows}) | from_entries')
+	seq 1 $(eww get number_of_workspaces) | jq --argjson windows "${WORKSPACE_WINDOWS}" --slurp -Mc 'map(tostring) | map({id: ., windows: ($windows[.]//0)})'
+}
+
+function get {
+    spaces
+    socat -u UNIX-CONNECT:/run/user/1000/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | while read -r line; do
+        spaces
+    done
+}
+
+function active {
+    # Output initial active workspace on focused monitor
+    hyprctl monitors -j | jq --raw-output 'map(select(.focused)) | .[0] | .activeWorkspace.id'
+    
+    # Listen for both workspace changes and monitor focus changes
+    socat -u UNIX-CONNECT:/run/user/1000/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - \
+        | stdbuf -o0 grep -E '^(workspace>>|focusedmon>>)' \
+        | while IFS= read -r line; do
+            # On any workspace or monitor change, output current active workspace on focused monitor
+            hyprctl monitors -j | jq --raw-output 'map(select(.focused)) | .[0] | .activeWorkspace.id'
+        done
+}
+
+function active_ws_empty {
+    WSPACES=$(spaces)
+    ACTIVE=$(hyprctl monitors -j | jq --raw-output '.[1] | .activeWorkspace.id')
+    let "i = $ACTIVE - 1"
+    WINDOWS=$(echo $WSPACES | jq --raw-output .[$i].windows)
+    if [[ $WINDOWS -gt 0 ]]; then
+        echo 'false'
+    else
+        echo 'true'
+    fi
+}
+
+function monitor_empty {
+    active_ws_empty
+}
+
+function get_environ {
+    echo $HYPRLAND_INSTANCE_SIGNATURE
+}
+
+if [[ $1 == 'get' ]]; then get; fi
+if [[ $1 == 'active' ]]; then active; fi
+if [[ $1 == 'monitor-empty' ]]; then monitor_empty; fi
+if [[ $1 == 'active-empty' ]]; then active_ws_empty; fi
+if [[ $1 == 'get-environ' ]]; then get_environ; fi

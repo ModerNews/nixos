@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Bar notification indicator. Backed by swaync (replaced dunst 2026-08-14).
+
+case "$1" in
+    toggle)
+        swaync-client -d -sw    # toggle do-not-disturb
+        eww update dnd_icon="$(icon)" dnd_status="$(state)" 2>/dev/null
+        ;;
+    icon)   [[ $(swaync-client -D 2>/dev/null) == "true" ]] && echo '󰂛' || echo '󰂚' ;;
+    state)  [[ $(swaync-client -D 2>/dev/null) == "true" ]] && echo 'on'  || echo 'off' ;;
+    count)  swaync-client -c 2>/dev/null || echo 0 ;;
+    open)   swaync-client -t -sw ;;
+    *)      echo "usage: $(basename "$0") {toggle|icon|state|count|open}" >&2; exit 1 ;;
+esac

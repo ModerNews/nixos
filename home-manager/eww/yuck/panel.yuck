@@ -1,0 +1,207 @@
+(defwidget panel_clock [] (box 
+    :class "button-bin"
+    :space-evenly false
+    (box
+        :class "button clock"
+        (label  :text panel_clock)
+    )
+))
+
+(defwidget panel_workspaces [] (box :class "button-bin workspaces"
+    (eventbox :class "button workspaces"
+        (box
+          :tooltip active_workspace  
+          :space-evenly false
+            (for workspace in workspaces
+                (button
+                    :class "workspace-btn ${workspace.id == active_workspace ? "active" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
+                    :onclick "hyprctl dispatch workspace ${workspace.id}"
+                    :valign "center"
+                    (label :text {workspace.windows > 0 ? "${workspace.id == active_workspace ? "" : ""}" : ""})
+                )
+            )
+        )
+    )
+))
+
+    
+(defvar    volume_slider      false)
+(defwidget volume_slider [] (eventbox :class "volume-bin"
+    :onhover "${EWW_CMD} update volume_slider=true"
+    :onhoverlost "${EWW_CMD} update volume_slider=false"
+    (box :space-evenly false
+        (revealer
+            :transition "slideright"
+            :duration "300ms"
+            :reveal volume_slider (box 
+            :class "sliders-bin volume"
+            :space-evenly false
+            (eventbox 
+                :class "slider"
+                :hexpand true
+                (overlay
+                    (scale  :value volume_level
+                            :onchange "${EWW_CONFIG_DIR}/scripts/volume set {}")
+                    (label  :valign "center"
+                            :class "icon" 
+                            :halign "START"
+                            :text speaker_type_icon)))
+        ))
+        (label :class "icon" :text "${volume_icon} " :valign "center")
+        (label :text "${volume_level}%"
+               :class "volume-level")
+)))
+
+(defwidget panel_actions [] (box :class "button-bin"
+    (box
+      (button
+          :class "button colorpicker"
+          :onclick "${EWW_CONFIG_DIR}/scripts/launcher colorpicker"
+          (label :class "icon wide" :text "󰈊")
+      )
+      (button
+          :class "button screenshot"
+          :onclick "hyprctl dispatch exec grimblast --freeze --notify copysave area"
+          (label :class "icon wide" :text "")
+      )
+    )
+))
+
+(defwidget ethernet_slider [] (eventbox 
+        (label :class "icon" :text "${ethernet_icon} " :valign "center")
+    )
+)
+
+(defvar vpn_slider false)
+(defwidget vpn_slider [] (eventbox
+    :onhover "${EWW_CMD} update vpn_slider=true"
+    :onhoverlost "${EWW_CMD} update vpn_slider=false"
+    (box
+        :space-evenly false
+        :class "vpn"
+        (revealer
+            :transition "slideright"
+            :duration "300ms"
+            :reveal vpn_slider (box 
+            :class "sliders-bin"
+            :space-evenly false
+            (box
+                :halign "start"
+                :space-evenly false
+                (label :class "icon" :text "󰯄 ")
+                (label 
+                  :visible {arraylength(wg_status) > 0 ? false : true}
+                  :class "vpn-status"
+                  :text "disconnected")
+                (box
+                    :halign "start"
+                    :class "wg-btns"
+                    :spacing 6
+                    :visible {arraylength(wg_status) > 0 ? true : false}
+                    :space-evenly false
+                    (for interface in wg_status
+                       (button
+                           :class "wg-btn" 
+                           :onclick "hyprctl dispatch exec wg-quick down ${interface}"
+                           (label :text {interface})
+                       )
+                    ))
+                (box :class "separator" :valign "center" )
+              (button
+                    :class "ts-btn"
+                    :onclick "hyprctl dispatch exec tailscale up --accept-routes"
+                    (box
+                        :halign "start"
+                        :space-evenly false
+                        (label :class "icon" :text "󰖂 ")
+                        (label :text tailscale_status)  
+                ))
+            )))
+        (label :class "icon" :text "${vpn_icon} " :valign "center")
+    )
+))
+
+(defwidget panel_network [] 
+    (box
+      :space-evenly false
+      :spacing 3
+      (ethernet_slider)
+      (vpn_slider)
+    )
+)
+
+(defwidget panel_system-indicators [] (box 
+    :class "button-bin system-indicators"
+    (eventbox :class "button"
+        (box
+            :space-evenly false
+            :spacing 11
+            (volume_slider)
+            (panel_network)
+        ))
+))
+
+(defwidget panel_notifications [] (box 
+    :class "button-bin"
+    (button
+        :class "button notifications"
+        :onclick "${EWW_CONFIG_DIR}/scripts/launcher notifications"
+        (box 
+            :space-evenly false
+            (label :class "icon" :text "${dnd_icon} " )
+            (label :text "${notification_count}" )
+        )
+    )
+))
+
+(defwidget panel_powermenu [] (box :class "button-bin powermenu" (button
+    :class "button powermenu"
+    :onclick "${EWW_CONFIG_DIR}/scripts/launcher toggle_menu powermenu"
+    (label :class "icon" :text "")
+)))
+
+(defwidget bar [] (centerbox
+    :class "panel ${active_ws_empty ? "floating" : ""}"
+    (box :class "barBorder"
+      :halign "start"
+      (box
+        :class "bar leftBar"
+        :halign "start"
+        :space-evenly false
+        (panel_clock)
+      )
+    )
+    (box :class "barBorder"
+      (box
+          :class "centerBar"
+          :spacing 6
+          :space-evenly false
+          (box :class "spacer")
+          (box :class "bar"
+          (panel_workspaces))
+          (box :class "bar"
+          (panel_actions))
+      )
+    )
+    (box
+        :class "rightBar"
+        :spacing 6
+        :space-evenly false
+        :halign "end"
+        (box :class "bar"
+        (panel_system-indicators))
+        (box :class "bar"
+        (box
+          :class "systray button-bin"
+          (eventbox :class "button systray"
+          (systray 
+            :class "systray"
+            :spacing 6
+            :icon-size "16"
+            :orientation "horizontal"))))
+        (box :class "bar"
+        (panel_notifications))
+        (box :class "bar"
+        (panel_powermenu))
+    )
+))

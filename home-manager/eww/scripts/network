@@ -1,0 +1,197 @@
+#!/usr/bin/env bash
+
+function ethernet_status {
+    # Get ethernet interface status using networkctl
+    ETHERNET_INTERFACE=$(networkctl list | grep ether | head -n1 | awk '{print $2}')
+    if [[ -z "$ETHERNET_INTERFACE" ]]; then
+        echo "disconnected"
+        return
+    fi
+    
+    ETHERNET_STATE=$(networkctl status "$ETHERNET_INTERFACE" | grep "State:" | awk '{print $2}')
+    if [[ $ETHERNET_STATE == "routable" ]]; then
+        echo "connected"
+    else
+        echo "disconnected"
+    fi
+}
+
+function ethernet_icon {
+    STATUS=$(ethernet_status)
+    if [[ $STATUS == "connected" ]]; then
+        # Check if we have internet connectivity
+        if ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+            echo '󰛳'  # Connected with internet
+        else
+            echo '󰲜'  # Connected but no internet
+        fi
+    else
+        echo '󰲛'  # Disconnected
+    fi
+}
+
+function wireguard_status {
+    # Get list of active Wireguard interfaces
+    WG_INTERFACES=$(ip a show type wireguard | grep state | awk '{print $2}' | sed 's/://')
+    if [[ -n "$WG_INTERFACES" ]]; then
+        echo "connected"
+    else
+        echo "disconnected"
+    fi
+}
+
+function wireguard_interfaces {
+    # Return JSON array of active Wireguard interface names
+    INTERFACES=$(ip a show type wireguard | grep state | awk '{print $2}' | sed 's/://')
+    
+    if [[ -z "$INTERFACES" ]]; then
+        echo "[]"
+        return
+    fi
+    
+    # Convert to JSON array
+    echo "$INTERFACES" | awk 'BEGIN{printf "["} {printf "%s\"%s\"", (NR==1?"":","), $0} END{printf "]"}'
+}
+
+function tailscale_status {
+    # Check Tailscale status
+    if command -v tailscale &>/dev/null; then
+        TAILSCALE_STATE=$(tailscale status --json 2>/dev/null | jq -r '.BackendState' 2>/dev/null)
+        if [[ $TAILSCALE_STATE == "Running" ]]; then
+            echo "up"
+        else
+            echo "down"
+        fi
+    else
+        echo "unavailable"
+    fi
+}
+
+function vpn_icon {
+    WG_STATUS=$(wireguard_status)
+    TS_STATUS=$(tailscale_status)
+    
+    # If both VPNs are connected
+    if [[ $WG_STATUS == "connected" && $TS_STATUS == "up" ]]; then
+        echo '󰦝'  # Multiple VPNs active
+        return
+    fi
+    
+    # If Wireguard is connected
+    if [[ $WG_STATUS != "disconnected" ]]; then
+        echo '󰦝'  # VPN shield icon
+        return
+    fi
+    
+    # If Tailscale is connected
+    if [[ $TS_STATUS == "up" ]]; then
+        echo '󰖂'  # VPN icon
+        return
+    fi
+    
+    # No VPN connected
+    echo '󰦞'  # VPN off icon
+}
+
+function combined_icon {
+    ETHERNET_STATUS=$(ethernet_status)
+    WG_STATUS=$(wireguard_status)
+    TS_STATUS=$(tailscale_status)
+    
+    # Priority: Show VPN status if any VPN is active, otherwise show ethernet
+    if [[ $WG_STATUS == "connected" || $TS_STATUS == "up" ]]; then
+        vpn_icon
+    else
+        ethernet_icon
+    fi
+}
+
+function connection_info {
+    ETHERNET_STATUS=$(ethernet_status)
+    WG_STATUS=$(wireguard_status)
+    TS_STATUS=$(tailscale_status)
+    
+    if [[ $ETHERNET_STATUS == "connected" ]]; then
+        if [[ $WG_STATUS == "connected" && $TS_STATUS == "up" ]]; then
+            echo "Ethernet + WG + Tailscale"
+        elif [[ $WG_STATUS == "connected" ]]; then
+            echo "Ethernet + Wireguard"
+        elif [[ $TS_STATUS == "up" ]]; then
+            echo "Ethernet + Tailscale"
+        else
+            echo "Ethernet"
+        fi
+    else
+        if [[ $WG_STATUS == "connected" && $TS_STATUS == "up" ]]; then
+            echo "WG + Tailscale (No Ethernet)"
+        elif [[ $WG_STATUS == "connected" ]]; then
+            echo "Wireguard (No Ethernet)"
+        elif [[ $TS_STATUS == "up" ]]; then
+            echo "Tailscale (No Ethernet)"
+        else
+            echo "No Connection"
+        fi
+    fi
+}
+
+function vpn_count {
+    WG_STATUS=$(wireguard_status)
+    TS_STATUS=$(tailscale_status)
+    
+    COUNT=0
+    if [[ $WG_STATUS == "connected" ]]; then ((COUNT++)); fi
+    if [[ $TS_STATUS == "up" ]]; then ((COUNT++)); fi
+    
+    echo $COUNT
+}
+
+function toggle_wireguard {
+    # Toggle Wireguard - this is a basic example, adjust for your setup
+    WG_STATUS=$(wireguard_status)
+    if [[ $WG_STATUS == "connected" ]]; then
+        # Bring down all Wireguard interfaces
+        for interface in $(wg show | grep "interface:" | awk '{print $2}'); do
+            sudo wg-quick down "$interface" 2>/dev/null
+        done
+    else
+        # Bring up default Wireguard interface (adjust as needed)
+        sudo wg-quick up wg0 2>/dev/null
+    fi
+}
+
+function toggle_tailscale {
+    TS_STATUS=$(tailscale_status)
+    if [[ $TS_STATUS == "up" ]]; then
+        tailscale down
+    else
+        tailscale up
+    fi
+}
+
+function network_state {
+    ETHERNET_STATUS=$(ethernet_status)
+    if [[ $ETHERNET_STATUS == "connected" ]]; then
+        echo "on"
+    else
+        echo "off"
+    fi
+}
+
+# Command line interface
+case $1 in
+    'ethernet_status') ethernet_status ;;
+    'ethernet_icon') ethernet_icon ;;
+    'wireguard_status') wireguard_status ;;
+    'wireguard_interfaces') wireguard_interfaces ;;
+    'tailscale_status') tailscale_status ;;
+    'vpn_icon') vpn_icon ;;
+    'combined_icon') combined_icon ;;
+    'icon') combined_icon ;;  # Alias for compatibility
+    'connection_info') connection_info ;;
+    'vpn_count') vpn_count ;;
+    'network_state') network_state ;;
+    'state') network_state ;;  # Alias for compatibility
+    'toggle_wireguard') toggle_wireguard ;;
+    'toggle_tailscale') toggle_tailscale ;;
+    *) echo "Usage: $0 {ethernet_status|ethernet_icon|wireguard_status|wireguard_interfaces|tailscale_status|vpn_icon|combined_icon|connection_info|vpn_count|network_state|toggle_wireguard|toggle_tailscale}" ;;
+esac

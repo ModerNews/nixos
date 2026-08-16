@@ -1,0 +1,31 @@
+;; FiiO KB1 — remaps six keys to F13–F21 for Hyprland `code:` binds (T10).
+;;
+;; The defcfg block from the original is REMOVED: the NixOS module generates
+;; input (device-file ...) and output (uinput-sink ...) itself from the
+;; `device` and `name` options, and fallthrough/allow-cmd are defcfg options.
+;; Leaving it in would emit them twice.
+
+(defsrc
+  prev pp next volu vold mute
+)
+
+(defalias
+  ;; Tap-holds for the buttons (Prev, Play, Next)
+  btn1 (tap-hold 200 f13 f14) ;; prev
+  btn2 (tap-hold 200 f15 f16) ;; play
+  btn3 (tap-hold 200 f17 f18) ;; next
+  
+  ;; Direct mapping for the Wheel & Mute (No hold needed)
+  whlu f19  ;; volu
+  whld f20  ;; vold
+  mute f21  ;; mute
+)
+
+(deflayer base
+  @btn1  ;; prev
+  @btn2  ;; play
+  @btn3  ;; next
+  @whlu  ;; volu (wheel up)
+  @whld  ;; vold (wheel down)
+  @mute  ;; mute
+)

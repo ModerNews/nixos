@@ -1,0 +1,44 @@
+;; Power menu — replaces the rofi applet that stood in for the widget that was
+;; never written upstream. Layout and glyphs deliberately mirror the old
+;; adi1090x rofi menu: fullscreen dim, one row of five circular icon buttons,
+;; an uptime pill above. Opened via scripts/launcher toggle_menu powermenu.
+
+(defwidget pm_button [icon action]
+  (button
+    :class "pm-btn"
+    :onclick "${EWW_CMD} close powermenu; ${action}"
+    (label :class "pm-icon" :text icon)))
+
+;; The overlay box must NOT carry halign/valign — that would shrink it to its
+;; content and render the dim as a floating rectangle instead of a fullscreen
+;; scrim. Centring happens on the inner box, and the expanding spacers above and
+;; below it are what let the scrim fill the window.
+(defwidget powermenu []
+  (eventbox
+    :onclick "${EWW_CMD} close powermenu"
+    (box
+      :class "pm-overlay"
+      :orientation "vertical"
+      :space-evenly false
+      (box :vexpand true)
+      (box
+        :orientation "vertical"
+        :halign "center"
+        :space-evenly false
+        :spacing 50
+        (box
+          :class "pm-message"
+          :halign "center"
+          (label :text "Uptime: ${uptime}"))
+        (box
+          :class "pm-row"
+          :orientation "horizontal"
+          :halign "center"
+          :space-evenly false
+          :spacing 20
+          (pm_button :icon "󰌾" :action "loginctl lock-session")
+          (pm_button :icon "󰤄" :action "mpc -q pause; systemctl suspend")
+          (pm_button :icon "󰍃" :action "hyprctl dispatch exit")
+          (pm_button :icon "󰑐" :action "systemctl reboot")
+          (pm_button :icon "󰐥" :action "systemctl poweroff")))
+      (box :vexpand true))))

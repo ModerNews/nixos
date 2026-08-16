@@ -1,0 +1,19 @@
+(deflisten active_workspace :initial "3" "scripts/workspaces active")
+(deflisten  workspaces          :initial  "[]" `scripts/workspaces get`)
+
+(defpoll    ethernet_icon       :interval "5s" `scripts/network ethernet_icon`)
+(defpoll    wg_status           :interval "5s" `scripts/network wireguard_interfaces`)
+(defpoll    tailscale_status    :interval "5s" `scripts/network tailscale_status`)
+(defpoll    vpn_icon            :interval "5s" `scripts/network vpn_icon`)
+
+(defpoll    volume_icon         :interval "3s" `scripts/volume icon`)
+(deflisten    volume_level        :interval "3s" :initial "99" `scripts/volume level`)
+(defpoll    speaker_type_icon   :interval "3s" :initial "󰓃" `scripts/volume type_icon`)
+
+(defpoll    notification_count  :interval "3s" `scripts/notifications count`)
+(defpoll    dnd_icon            :interval "3s" `scripts/notifications icon`)
+
+(defpoll    panel_clock         :interval "5s" `date "+%H:%M  |  %b. %d. %A"`)
+(defpoll    uptime              :interval "60s" "uptime -p | sed 's/^up //'")
+
+(deflisten  active_ws_empty     :initial "true" `scripts/workspaces monitor-empty`)
