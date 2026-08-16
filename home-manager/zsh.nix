@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  flakeDir = "$HOME/Projects/nixos-config";
+  flakeDir = "$HOME/.nixos";
 in {
   home.sessionVariables.EDITOR = "nvim";
   home.sessionPath = ["$HOME/.local/bin"];

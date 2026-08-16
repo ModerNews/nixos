@@ -56,7 +56,12 @@ that is not sops-encrypted, which is the one mistake that would matter.
 
 ### 1. Partition — must match `nixos/configuration.nix` exactly
 
-Nothing verifies this; a mismatch surfaces as an emergency shell at boot.
+Boot **any** NixOS ISO and ignore the graphical installer: Calamares writes its
+own `/etc/nixos/configuration.nix` and knows nothing about flakes, a tmpfs root,
+or this layout. gparted is no better — it cannot create btrfs subvolumes.
+
+Nothing verifies the result against the config; a mismatch surfaces as an
+emergency shell at boot.
 
 ```
 nvme0n1  p1  2G    vfat   label BOOT
@@ -68,9 +73,62 @@ sda      p1  all   xfs    label DATA
 ```
 
 `/` is a tmpfs — there is no root LV. Leave the rest of `vg_evo` unallocated.
-XFS must have `ftype=1` (the mkfs default) for podman's overlay store.
 
-**Confirm `nvme1n1` (477 GB, Windows) is untouched.**
+```bash
+lsblk -o NAME,SIZE,MODEL,SERIAL      # CONFIRM which disk is which
+```
+
+**`nvme1n1` (477 GB, Windows) must not appear in anything below.**
+
+```bash
+# --- partition tables -------------------------------------------------------
+sgdisk --zap-all /dev/nvme0n1
+sgdisk -n1:0:+2G -t1:EF00 -c1:BOOT /dev/nvme0n1
+sgdisk -n2:0:0   -t2:8E00 -c2:PV   /dev/nvme0n1
+
+sgdisk --zap-all /dev/sda
+sgdisk -n1:0:0 -t1:8300 -c1:DATA /dev/sda
+
+# --- filesystems ------------------------------------------------------------
+mkfs.vfat -F32 -n BOOT /dev/nvme0n1p1
+mkfs.xfs  -L DATA /dev/sda1          # ftype=1 is the default; podman needs it
+
+pvcreate /dev/nvme0n1p2
+vgcreate vg_evo /dev/nvme0n1p2
+lvcreate -L 200G -n lv_nix   vg_evo
+lvcreate -L 150G -n lv_state vg_evo
+lvcreate -L 150G -n lv_home  vg_evo
+
+mkfs.xfs   /dev/vg_evo/lv_nix
+mkfs.xfs   /dev/vg_evo/lv_state
+mkfs.btrfs /dev/vg_evo/lv_home
+
+# --- btrfs subvolumes -------------------------------------------------------
+mkdir -p /tmp/btrfs && mount /dev/vg_evo/lv_home /tmp/btrfs
+btrfs subvolume create /tmp/btrfs/@home
+btrfs subvolume create /tmp/btrfs/@cache
+btrfs subvolume create /tmp/btrfs/@persist
+umount /tmp/btrfs
+
+# --- mount the target, root first -------------------------------------------
+mount -t tmpfs -o size=25%,mode=755 none /mnt
+mkdir -p /mnt/{boot,nix,state,persist,home} /mnt/mnt/data
+
+mount /dev/disk/by-label/BOOT /mnt/boot
+mount -o noatime /dev/vg_evo/lv_nix   /mnt/nix
+mount            /dev/vg_evo/lv_state /mnt/state
+mount -o subvol=@persist,compress=zstd /dev/vg_evo/lv_home /mnt/persist
+mount -o subvol=@home,compress=zstd    /dev/vg_evo/lv_home /mnt/home
+mkdir -p /mnt/home/gruzin/.cache
+mount -o subvol=@cache,compress=zstd   /dev/vg_evo/lv_home /mnt/home/gruzin/.cache
+mount /dev/disk/by-label/DATA /mnt/mnt/data
+
+lsblk -f                              # sanity-check against the table above
+```
+
+Mounting `/mnt` as tmpfs is deliberate: it is what the installed system will
+have, so anything the installer writes outside `/nix`, `/boot`, `/state`,
+`/persist` and `/home` is *meant* to vanish — impermanence recreates it.
 
 ### 2. Host key — before `nixos-install`
 
@@ -103,14 +161,35 @@ nixos-generate-config --root /mnt --no-filesystems
 `--no-filesystems` is deliberate: mounts are a design decision and live in
 `configuration.nix`. Diff the initrd module list against what is committed.
 
-### 4. Install
+### 4. Get the repo onto the machine, then install
+
+The flake has to be present locally — including `secrets/secrets.yaml`, which is
+encrypted and therefore safe to carry on a USB stick or clone from a private
+remote.
+
+Put it where it will live afterwards, so nothing needs moving later:
 
 ```bash
-nixos-install --flake /mnt/etc/nixos#gruzin-desktop --no-root-passwd
+# NOT /etc/nixos — that is on the tmpfs root and would vanish at first reboot.
+# ~/.nixos is on the @home subvolume, so it persists and rides the btrfs send
+# replication with the rest of /home.
+git clone <remote> /mnt/home/gruzin/.nixos
+# or, from a USB stick / another machine:
+#   rsync -a nixos-config/ /mnt/home/gruzin/.nixos/
+
+chown -R 1000:100 /mnt/home/gruzin        # gruzin:users, before the user exists
+```
+
+```bash
+nixos-install --flake /mnt/home/gruzin/.nixos#gruzin-desktop --no-root-passwd
 ```
 
 `--no-root-passwd` because root's hash comes from sops. Expect roughly
-**8.3 GB of downloads and ~500 local builds**.
+**8.3 GB of downloads and ~510 local builds**.
+
+If the clone is over SSH and the tunnel is not up yet, remember `wmswg` does not
+exist until the system is installed — use HTTPS, a USB stick, or tailscale from
+the ISO.
 
 ### 5. Verify BEFORE rebooting out of the installer
 
