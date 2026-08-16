@@ -1,8 +1,10 @@
 keys:
   - &user_gruzin age1f32jedppcqx2tmmxfjfa5whu03h8kt9e4vjvcnd6kvtupdjql4asal4x0h
+  - &host_gruzin_desktop age16vfyp0s89z6d9vv235akum7dag5huyj7msvaaxf4ejdsc6smnewqsmcj27
 
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
     key_groups:
       - age:
           - *user_gruzin
+          - *host_gruzin_desktop
