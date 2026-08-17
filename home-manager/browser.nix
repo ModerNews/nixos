@@ -21,6 +21,12 @@ in {
 
         "signon.rememberSignons" = false;
 
+        # LibreWolf's default: nuke cookies/site data (and thus login
+        # sessions) on every shutdown, with no per-site prompt to opt
+        # sites out. Extensions (uBlock, Bitwarden, etc.) cover privacy
+        # here, so don't sacrifice session persistence for it.
+        "privacy.sanitize.sanitizeOnShutdown" = false;
+
         "privacy.clearOnShutdown_v2.formdata" = true;
         "network.dns.disablePrefetch" = true;
 
@@ -55,6 +61,19 @@ in {
   };
 
   home.packages = [pkgs.chromium];
+
+  # Patch just the Keywords line into upstream's librewolf.desktop (rather
+  # than redeclaring the whole entry) so Exec/Actions/Version etc. keep
+  # tracking whatever the package ships. Same filename wins over the
+  # nixpkgs copy via XDG_DATA_DIRS ordering. This adds "firefox" as a
+  # search keyword — old muscle memory typing "firefox" into the launcher
+  # still finds it.
+  xdg.dataFile."applications/librewolf.desktop".source =
+    pkgs.runCommand "librewolf-desktop-with-keywords" {}
+    ''
+      sed '/^\[Desktop Entry\]/a Keywords=firefox;Firefox;web;browser;' \
+        ${pkgs.librewolf}/share/applications/librewolf.desktop > $out
+    '';
 
   xdg.mimeApps = {
     enable = true;

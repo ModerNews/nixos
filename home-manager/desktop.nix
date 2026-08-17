@@ -35,6 +35,99 @@ in {
     };
   };
 
+  programs.hyprlock = {
+    enable = true;
+
+    settings = {
+      general = {
+        hide_cursor = false;
+        ignore_empty_input = true;
+      };
+
+      animations = {
+        enabled = true;
+        fade_in = {
+          duration = 300;
+          bezier = "easeOutQuint";
+        };
+        fade_out = {
+          duration = 300;
+          bezier = "easeOutQuint";
+        };
+      };
+
+      background = [
+        {
+          monitor = "";
+          path = "screenshot";
+          blur_passes = 4;
+          blur_size = 2;
+          vibrancy = 0.97;
+          brightness = 0.65;
+          contrast = 0.9;
+        }
+      ];
+
+      input-field = [
+        {
+          monitor = "";
+          size = "280, 60";
+          position = "0, -160";
+          halign = "center";
+          valign = "center";
+          rounding = 10;
+          outline_thickness = 2;
+          outer_color = "rgba(ad2a30ee)";
+          inner_color = "rgba(181818cc)";
+          font_color = "rgba(eeeeeeff)";
+          font_family = "JetBrainsMono Nerd Font";
+          fail_color = "rgba(f66151ee)";
+          check_color = "rgba(57e389ee)";
+          placeholder_text = ''<span foreground="##eeeeee88">Input password...</span>'';
+          fade_on_empty = false;
+          dots_center = true;
+          shadow_passes = 2;
+          shadow_color = "rgba(1a1a1aee)";
+        }
+      ];
+
+      label = [
+        {
+          monitor = "";
+          text = ''<span font_weight="ultrabold">$TIME</span>'';
+          font_family = "JetBrainsMono Nerd Font";
+          font_size = 100;
+          color = "rgba(eeeeeeff)";
+          halign = "center";
+          valign = "center";
+          position = "0, 300";
+          shadow_passes = 2;
+          shadow_color = "rgba(000000aa)";
+        }
+        {
+          monitor = "";
+          text = ''cmd[update:60000] date +"%A, %-d %B"'';
+          font_family = "JetBrainsMono Nerd Font";
+          font_size = 22;
+          color = "rgba(eeeeeeaa)";
+          halign = "center";
+          valign = "center";
+          position = "0, 200";
+        }
+        {
+          monitor = "";
+          text = ''<span font_weight="bold">  $USER</span>'';
+          font_family = "JetBrainsMono Nerd Font";
+          font_size = 18;
+          color = "rgba(eeeeeeff)";
+          halign = "center";
+          valign = "center";
+          position = "0, -80";
+        }
+      ];
+    };
+  };
+
   services.hyprpaper = {
     enable = true;
     settings = {
