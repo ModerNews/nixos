@@ -7,8 +7,6 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   boot.initrd.availableKernelModules = [
     "nvme"
     "xhci_pci"
@@ -25,6 +23,8 @@
 
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.amd.updateMicrocode = lib.mkDefault true;
