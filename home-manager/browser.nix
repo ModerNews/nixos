@@ -1,4 +1,4 @@
-{...}: let
+{pkgs, ...}: let
   amo = slug: "https://addons.mozilla.org/firefox/downloads/latest/${slug}/latest.xpi";
   forceInstall = slug: {
     install_url = amo slug;
@@ -53,4 +53,6 @@ in {
       "@contain-facebook" = forceInstall "facebook-container";
     };
   };
+
+  home.packages = [pkgs.chromium];
 }

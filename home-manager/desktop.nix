@@ -71,6 +71,11 @@ in {
     jq
     grimblast
     hyprpicker
+
+    playerctl # XF86AudioPlay/Next/Prev
+    pamixer # XF86AudioMicMute
+    brightnessctl # XF86MonBrightness* — see note below
+    pavucontrol # scratchpad: audio
     wl-clipboard # wl-copy
     libnotify # notify-send
     pulseaudio # pactl
@@ -89,19 +94,6 @@ in {
       RemainAfterExit = true;
       ExecStart = "${lib.getExe pkgs.eww} open-many bar0 bar1 bar2";
       ExecStop = "${lib.getExe pkgs.eww} close-all";
-    };
-  };
-
-  systemd.user.services.bitwarden = {
-    Unit = {
-      Description = "Bitwarden desktop";
-      PartOf = [config.wayland.systemd.target];
-      After = [config.wayland.systemd.target];
-    };
-    Install.WantedBy = [config.wayland.systemd.target];
-    Service = {
-      ExecStart = "${lib.getExe pkgs.bitwarden-desktop}";
-      Restart = "on-failure";
     };
   };
 }

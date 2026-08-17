@@ -38,4 +38,10 @@
     package = pkgs.adwaita-icon-theme;
     size = 24;
   };
+
+  home.packages = with pkgs; [
+    matugen
+    adw-gtk3
+    qt6Packages.qt6ct
+  ];
 }

@@ -77,7 +77,8 @@ in {
         bindkey "^[[B"    down-line-or-search
 
         export FORGIT_FZF_DEFAULT_OPTS="
-        --popup center,80%,80%
+        --height 80%
+        --margin 5%
         --border
         --reverse
         "
@@ -85,16 +86,6 @@ in {
     ];
   };
 
-  # starship: the audit records "~/.config authoritative", so the toml is carried
-  # verbatim rather than translated into programs.starship.settings.
-  #
-  # Deliberate: custom.git_branch is a shell one-liner with nested quotes, $(),
-  # and @{upstream}; the kubernetes context patterns are regexes with \w. Both
-  # would need double-escaping through Nix -> TOML, which is the same class of
-  # hazard as hm#9468. Verbatim keeps it byte-for-byte and editable as TOML.
-  #
-  # No conflict: home.file.${configPath} in the module is mkIf hasGeneratedConfig,
-  # so with `settings` empty it writes nothing and only exports STARSHIP_CONFIG.
   programs.starship.enable = true;
   xdg.configFile."starship.toml".source = ./zsh/starship.toml;
 
@@ -103,10 +94,5 @@ in {
     enableZshIntegration = true;
   };
 
-  home.packages = with pkgs; [
-    eza
-    ripgrep
-    tty-clock
-    fastfetch
-  ];
+  home.packages = [pkgs.tty-clock];
 }

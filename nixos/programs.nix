@@ -20,6 +20,14 @@
   # Handles its own limits and polkit rules.
   programs.gamemode.enable = true;
 
+  # System-level rather than a user package: capSysNice grants gamescope the
+  # real-time scheduling priority it wants, which a package in home.packages
+  # cannot obtain.
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
+
   # ---------------------------------------------------------------------------
   # Capture
   # ---------------------------------------------------------------------------

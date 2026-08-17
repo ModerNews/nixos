@@ -6,18 +6,30 @@
   ...
 }: {
   imports = [
+    # desktop session
     ./hyprland.nix
     ./desktop.nix
     ./swaync.nix
-    ./zsh.nix
-    ./terminal.nix
-    ./nvim.nix
-    ./containers.nix
-    ./packages.nix
-    ./dev.nix
     ./theming.nix
-    ./browser.nix
+
+    # terminal & shell
+    ./terminal.nix
+    ./zsh.nix
+    ./cli.nix
+
+    # development
+    ./git.nix
+    ./nvim.nix
+    ./dev.nix
+    ./containers.nix
     ./ssh.nix
+    ./infra.nix
+
+    # applications
+    ./browser.nix
+    ./media.nix
+    ./files.nix
+    ./security.nix
   ];
 
   # nixpkgs.overlays lives in nixos/configuration.nix — useGlobalPkgs = true
@@ -29,7 +41,6 @@
   };
 
   programs.home-manager.enable = true;
-  programs.git.enable = true;
 
   # Polkit authentication agent. GTK4, to match gnome-secrets / GDM /
   # gnome-keyring; no HM module exists for it, hence the unit by hand.
