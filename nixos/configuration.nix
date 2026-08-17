@@ -68,6 +68,9 @@
     cleanOnBoot = true;
   };
 
+  boot.supportedFilesystems = ["nfs"];
+  services.rpcbind.enable = true;
+
   fileSystems = {
     "/" = {
       device = "none";
@@ -121,6 +124,30 @@
     "/mnt/data" = {
       device = "/dev/disk/by-label/DATA";
       fsType = "xfs";
+    };
+
+    "/home/gruzin/.local/share/Steam" = {
+      device = "/mnt/data/steam";
+      fsType = "none";
+      options = ["bind"];
+    };
+
+    "/home/gruzin/VMs" = {
+      device = "/mnt/data/vms";
+      fsType = "none";
+      options = ["bind"];
+    };
+
+    "/home/gruzin/Downloads" = {
+      device = "/mnt/data/scratch/downloads";
+      fsType = "none";
+      options = ["bind"];
+    };
+
+    "/opt/steam-lib" = {
+      device = "/dev/vg_evo/lv_games";
+      fsType = "xfs";
+      options = ["noatime"];
     };
   };
 
