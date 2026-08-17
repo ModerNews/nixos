@@ -55,7 +55,7 @@ function picker {
 
 # Notification centre: swaync when it owns the bus, dunst otherwise.
 function notifications {
-    if pgrep -x swaync >/dev/null 2>&1; then
+    if systemctl --user is-active --quiet swaync.service; then
         swaync-client -t
     elif pgrep -x dunst >/dev/null 2>&1; then
         dunstctl history-pop

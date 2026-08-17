@@ -38,6 +38,23 @@
     };
 
     style = ''
+      :root {
+        --cc-bg: rgba(26, 8, 8, 0.75);
+        --noti-border-color: rgba(173, 42, 48, 0.6);
+        --noti-bg: 26, 8, 8;
+        --noti-bg-alpha: 0.75;
+        --noti-bg-darker: rgb(18, 4, 4);
+        --noti-bg-hover: rgb(42, 20, 24);
+        --noti-bg-focus: rgba(42, 20, 24, 0.7);
+        --noti-close-bg: rgba(173, 42, 48, 0.5);
+        --noti-close-bg-hover: rgba(173, 42, 48, 0.85);
+        --text-color: rgb(254, 254, 254);
+        --text-color-disabled: rgb(102, 102, 102);
+        --bg-selected: rgb(173, 42, 48);
+        --border: 1px solid rgba(173, 42, 48, 0.6);
+        --border-radius: 10px;
+      }
+
       * {
         font-family: "JetBrainsMono Nerd Font";
         font-size: 14px;
