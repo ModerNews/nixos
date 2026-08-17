@@ -39,8 +39,12 @@ in {
     enable = true;
     settings = {
       splash = false;
-      preload = [wallpaper];
-      wallpaper = ["*,${wallpaper}"];
+      wallpaper = [
+        {
+          monitor = "";
+          path = wallpaper;
+        }
+      ];
     };
   };
 
