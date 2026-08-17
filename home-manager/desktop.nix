@@ -39,90 +39,68 @@ in {
     enable = true;
 
     settings = {
-      general = {
-        hide_cursor = false;
-        ignore_empty_input = true;
-      };
-
-      animations = {
-        enabled = true;
-        fade_in = {
-          duration = 300;
-          bezier = "easeOutQuint";
-        };
-        fade_out = {
-          duration = 300;
-          bezier = "easeOutQuint";
-        };
-      };
-
       background = [
         {
           monitor = "";
-          path = "screenshot";
-          blur_passes = 4;
-          blur_size = 2;
-          vibrancy = 0.97;
-          brightness = 0.65;
-          contrast = 0.9;
+          path = wallpaper;
+          blur_size = 3;
+          blur_passes = 1;
+          vibrancy = 0.1696;
         }
       ];
 
       input-field = [
         {
           monitor = "";
-          size = "280, 60";
-          position = "0, -160";
-          halign = "center";
-          valign = "center";
-          rounding = 10;
-          outline_thickness = 2;
-          outer_color = "rgba(ad2a30ee)";
-          inner_color = "rgba(181818cc)";
-          font_color = "rgba(eeeeeeff)";
-          font_family = "JetBrainsMono Nerd Font";
-          fail_color = "rgba(f66151ee)";
-          check_color = "rgba(57e389ee)";
-          placeholder_text = ''<span foreground="##eeeeee88">Input password...</span>'';
-          fade_on_empty = false;
+          size = "250, 25";
+          outline_thickness = 3;
+          dots_size = 0.2;
+          dots_spacing = 0.64;
           dots_center = true;
-          shadow_passes = 2;
-          shadow_color = "rgba(1a1a1aee)";
+          outer_color = "rgb(ad2a30)";
+          inner_color = "rgb(1b1924)";
+          font_color = "rgb(fefefe)";
+          fade_on_empty = true;
+          placeholder_text = "<i>Password...</i>";
+          hide_input = false;
+          position = "0, 75";
+          halign = "center";
+          valign = "bottom";
         }
       ];
 
       label = [
+        # Current time
         {
           monitor = "";
-          text = ''<span font_weight="ultrabold">$TIME</span>'';
-          font_family = "JetBrainsMono Nerd Font";
-          font_size = 100;
-          color = "rgba(eeeeeeff)";
+          text = ''cmd[update:1000] echo "<b><big> $(date +"%H:%M:%S") </big></b>"'';
+          color = "rgb(fefefe)";
+          font_size = 64;
+          font_family = "JetBrains Mono Nerd Font 10";
+          position = "0, 16";
           halign = "center";
           valign = "center";
-          position = "0, 300";
-          shadow_passes = 2;
-          shadow_color = "rgba(000000aa)";
+        }
+        # User label
+        {
+          monitor = "";
+          text = ''cmd[] echo "$(hyprctl splash)"'';
+          color = "rgb(fefefe)";
+          font_size = 20;
+          font_family = "JetBrains Mono Nerd Font 10";
+          position = "0, -50";
+          halign = "center";
+          valign = "center";
         }
         {
           monitor = "";
-          text = ''cmd[update:60000] date +"%A, %-d %B"'';
-          font_family = "JetBrainsMono Nerd Font";
-          font_size = 22;
-          color = "rgba(eeeeeeaa)";
+          text = "Type to unlock!";
+          color = "rgb(b0b0b0)";
+          font_size = 16;
+          font_family = "JetBrains Mono Nerd Font 10";
+          position = "0, 30";
           halign = "center";
-          valign = "center";
-          position = "0, 200";
-        }
-        {
-          monitor = "";
-          text = ''<span font_weight="bold">  $USER</span>'';
-          font_family = "JetBrainsMono Nerd Font";
-          font_size = 18;
-          color = "rgba(eeeeeeff)";
-          halign = "center";
-          valign = "center";
-          position = "0, -80";
+          valign = "bottom";
         }
       ];
     };
