@@ -26,8 +26,9 @@
     feh
   ];
 
-  # Without this, video/audio MIME defaults are whatever last claimed them
-  # (e.g. audio/mpeg and audio/flac were defaulting to Audacity).
+  # Without this, video/audio/image MIME defaults are whatever last claimed
+  # them (e.g. audio/mpeg and audio/flac were defaulting to Audacity, and
+  # images were opening in chromium instead of feh).
   xdg.mimeApps = {
     enable = true;
     defaultApplications = let
@@ -52,7 +53,16 @@
         "audio/x-ms-wma"
         "application/ogg"
       ];
+      fehTypes = [
+        "image/png"
+        "image/jpeg"
+        "image/gif"
+        "image/webp"
+        "image/bmp"
+        "image/tiff"
+      ];
     in
-      lib.genAttrs mpvTypes (_: ["mpv.desktop"]);
+      lib.genAttrs mpvTypes (_: ["mpv.desktop"])
+      // lib.genAttrs fehTypes (_: ["feh.desktop"]);
   };
 }

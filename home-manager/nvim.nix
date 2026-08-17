@@ -36,4 +36,20 @@
     tree-sitter
     nodejs # several servers and parsers are Node scripts
   ];
+
+  # xdg-open on a text file was landing in IntelliJ (whichever app last
+  # registered text/plain); route it through nvim in a kitty window, using
+  # --class the same way the hyprland.nix scratchpads do so the window rule
+  # below can float/center it consistently.
+  xdg.desktopEntries.kitty-nvim = {
+    name = "Neovim (kitty)";
+    genericName = "Text Editor";
+    exec = "kitty --class kitty-nvim -- nvim %f";
+    terminal = false;
+    icon = "nvim";
+    mimeType = ["text/plain"];
+    noDisplay = true;
+  };
+
+  xdg.mimeApps.defaultApplications."text/plain" = ["kitty-nvim.desktop"];
 }

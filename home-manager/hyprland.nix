@@ -376,6 +376,15 @@ in {
             match.class = "^(gamescope)$";
             fullscreen = true;
           }
+          # xdg-open's text/plain handler (nvim.nix); not a scratchpad, just
+          # reuses the same float/center treatment via its kitty --class.
+          {
+            name = "kitty-nvim";
+            match.class = "kitty-nvim";
+            float = true;
+            center = true;
+            size = "1200 800";
+          }
         ]
         ++ map (sp: {
           name = "scratchpad-${sp.name}";
