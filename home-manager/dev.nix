@@ -7,6 +7,9 @@
   };
 
   home.packages = with pkgs; [
+    claude-code
+    codex
+
     pre-commit
     yamllint
     gnumake
