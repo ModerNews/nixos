@@ -309,6 +309,11 @@
   security.sudo = {
     enable = true;
     execWheelOnly = true;
+    # Otherwise the lectured-state sudo keys off doesn't survive each new
+    # generation, so the "usual lecture" spiel reappears on first sudo use.
+    extraConfig = ''
+      Defaults lecture = "never"
+    '';
   };
 
   services.udev.packages = [pkgs.yubikey-personalization];
