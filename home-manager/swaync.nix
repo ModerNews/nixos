@@ -11,7 +11,6 @@
       cssPriority = "application";
 
       control-center-width = 420;
-      control-center-height = 560;
 
       notification-icon-size = 16;
       notification-body-image-height = 100;
@@ -21,7 +20,7 @@
       timeout-low = 5;
       timeout-critical = 0;
 
-      fit-to-screen = false;
+      fit-to-screen = true;
       keyboard-shortcuts = true;
       image-visibility = "when-available";
       transition-time = 200;
@@ -51,13 +50,22 @@
         --text-color: rgb(254, 254, 254);
         --text-color-disabled: rgb(102, 102, 102);
         --bg-selected: rgb(173, 42, 48);
-        --border: 1px solid rgba(173, 42, 48, 0.6);
+        --border: 2px solid rgba(173, 42, 48, 0.75);
         --border-radius: 10px;
       }
 
       * {
         font-family: "JetBrainsMono Nerd Font";
         font-size: 14px;
+      }
+
+      .control-center {
+        border: var(--border);
+      }
+
+      .widget {
+        margin: 4px;
+        padding: 4px;
       }
 
       .notification-content image {
