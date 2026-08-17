@@ -21,6 +21,30 @@
         mode = "0640";
         restartUnits = ["systemd-networkd.service"];
       };
+
+      # Break-glass mTLS admin kubeconfigs — each value is a *complete*
+      # standalone kubeconfig (cluster+context+user), not just a cert/key
+      # pair, so it can be dropped straight into KUBECONFIG and merged by
+      # kubectl/kubie. See home-manager/kube.nix for the non-secret half
+      # (cluster defs + OIDC exec users) these merge on top of.
+      "kube/admin-tools" = {
+        owner = "gruzin";
+        group = "users";
+        mode = "0400";
+        path = "/home/gruzin/.kube/admin-tools.yaml";
+      };
+      "kube/admin-homelab" = {
+        owner = "gruzin";
+        group = "users";
+        mode = "0400";
+        path = "/home/gruzin/.kube/admin-homelab.yaml";
+      };
+      "kube/admin-proxy" = {
+        owner = "gruzin";
+        group = "users";
+        mode = "0400";
+        path = "/home/gruzin/.kube/admin-proxy.yaml";
+      };
     };
   };
 
@@ -49,6 +73,15 @@
   #     root:   $y$j9T$...
   #   wireguard:
   #     wmswg: <base64 private key>
+  #   kube:
+  #     admin-tools: |
+  #       apiVersion: v1
+  #       kind: Config
+  #       ...                     # full standalone kubeconfig, not just a cert/key pair
+  #     admin-homelab: |
+  #       ...
+  #     admin-proxy: |
+  #       ...
   #
   # Until secrets/secrets.yaml is real, activation fails loudly — which is the
   # correct failure. The alternative (falling back to plaintext paths) would

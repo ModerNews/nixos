@@ -24,6 +24,7 @@
     ./containers.nix
     ./ssh.nix
     ./infra.nix
+    ./kube.nix
 
     # applications
     ./browser.nix
