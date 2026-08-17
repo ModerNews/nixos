@@ -12,7 +12,7 @@ in {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";
         before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = "sleep 2 && hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
+        after_sleep_cmd = "sleep 2 && hyprctl reload";
         on_lock_cmd = "busctl call org.freedesktop.login1 /org/freedesktop/login1/session/auto org.freedesktop.login1.Session SetLockedHint b true";
         on_unlock_cmd = "busctl call org.freedesktop.login1 /org/freedesktop/login1/session/auto org.freedesktop.login1.Session SetLockedHint b false";
       };
