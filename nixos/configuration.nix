@@ -153,11 +153,6 @@
   };
 
   systemd.tmpfiles.rules = [
-    # /home/gruzin/.cache is the @cache btrfs subvolume. A newly created
-    # subvolume's ROOT DIRECTORY is owned by root:root no matter what its parent
-    # is, so the mountpoint is not writable by gruzin and Home Manager fails at
-    # activation with "ln: failed to create symbolic link .../.cache/...:
-    # Permission denied". The same applies to any subvolume mounted under $HOME.
     "d /home/gruzin 0700 gruzin users -"
     "d /home/gruzin/.cache 0755 gruzin users -"
 

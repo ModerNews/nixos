@@ -32,6 +32,25 @@ require("lazy").setup({
     install = { colorscheme = { "habamax" } },
     -- automatically check for plugin updates
     checker = { enabled = true },
-    -- Enable luarocks for plugins that need Lua dependencies (e.g. rest.nvim)
-    rocks = { enabled = true },
+
+    -- Disabled: nothing installed needs luarocks. rest.nvim is not in the
+    -- plugin set, yet `hererocks` sits in lazy-lock.json because this was on —
+    -- and bootstrapping it COMPILES Lua at runtime, which is the class of thing
+    -- that fails on NixOS. Turn back on only if a plugin actually requires it.
+    rocks = { enabled = false },
+
+    -- ~/.config/nvim is a read-only symlink into the Nix store, so lazy cannot
+    -- write its default lockfile at stdpath("config")/lazy-lock.json.
+    --
+    -- Point it at the copy inside the flake repo instead: that is a real file
+    -- under git, so `:Lazy sync` updates the VERSION-CONTROLLED lockfile
+    -- directly and you just commit the result. Falls back to the data dir if
+    -- the repo is not checked out where expected.
+    lockfile = (function()
+        local repo = vim.fn.expand("~/.nixos/home-manager/nvim/lazy-lock.json")
+        if (vim.uv or vim.loop).fs_stat(repo) then
+            return repo
+        end
+        return vim.fn.stdpath("data") .. "/lazy-lock.json"
+    end)(),
 })
