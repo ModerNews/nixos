@@ -44,6 +44,7 @@ in {
       # wifi = "nmtui";
       shutdown = "systemctl poweroff";
       lock = "loginctl lock-session";
+      run0 = "run0 --background=";
 
       zshconfig = "$EDITOR ${flakeDir}";
 
