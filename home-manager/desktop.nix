@@ -176,7 +176,7 @@ in {
         opacity = 0.65;
         material = "blur";
         rounding = 10;
-        client_side_decorations.border_width = 2;
+        client_side_decorations.border_width = 4;
       };
     };
   };
