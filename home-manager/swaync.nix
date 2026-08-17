@@ -11,6 +11,9 @@
       cssPriority = "application";
 
       control-center-width = 420;
+      control-center-margin-top = 5;
+      control-center-margin-bottom = 15;
+      control-center-margin-right = 15;
 
       notification-icon-size = 16;
       notification-body-image-height = 100;
