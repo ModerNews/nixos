@@ -164,9 +164,12 @@
   # Off the tmpfs /tmp: with no swap, a large source build there OOMs.
   systemd.services.nix-daemon.environment.TMPDIR = "/state/ephemeral/nix-build";
 
+  programs.zsh.enable = true;
+
   users.users.gruzin = {
     isNormalUser = true;
     description = "Grzegorz Jagielski";
+    shell = pkgs.zsh;
     extraGroups = ["wheel" "wireshark"];
     openssh.authorizedKeys.keys = []; # TODO
   };
