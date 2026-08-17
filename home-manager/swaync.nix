@@ -71,6 +71,11 @@
         padding: 4px;
       }
 
+      .notification-row:selected,
+      .notification-row:hover {
+        background: var(--noti-bg-focus);
+      }
+
       .notification-content image {
         margin-right: 12px;
       }
