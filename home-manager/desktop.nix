@@ -25,6 +25,7 @@ in {
         {
           timeout = 330; # 5.5min — screen off
           on-timeout = "hyprctl dispatch 'hl.dsp.dpms(\"off\")'";
+          on-resume = "hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
         }
         {
           timeout = 1800; # 30min — suspend
