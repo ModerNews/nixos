@@ -75,16 +75,6 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-
-              # Without this, activation ABORTS the moment it meets a file it
-              # would overwrite but does not manage — "Existing file … is in
-              # the way of …". The audit predicted exactly this ("HM refuses to
-              # clobber pre-existing files at activation, so stale dotfiles
-              # cause collisions"), and it is why /home was wiped.
-              #
-              # With it, the offending file is renamed to <name>.hm-bak and
-              # activation continues — so a collision becomes a thing to look
-              # at afterwards rather than a failed rebuild.
               backupFileExtension = "hm-bak";
               extraSpecialArgs = {inherit inputs;};
               users.gruzin = import ./home-manager/home.nix;

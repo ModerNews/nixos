@@ -121,6 +121,13 @@ mount -o subvol=@persist,compress=zstd /dev/vg_evo/lv_home /mnt/persist
 mount -o subvol=@home,compress=zstd    /dev/vg_evo/lv_home /mnt/home
 mkdir -p /mnt/home/gruzin/.cache
 mount -o subvol=@cache,compress=zstd   /dev/vg_evo/lv_home /mnt/home/gruzin/.cache
+
+# A new btrfs subvolume's root dir is owned by root:root regardless of parent,
+# so every subvolume mounted under $HOME needs this or Home Manager activation
+# fails with "Permission denied" on the mountpoint. (systemd.tmpfiles also
+# enforces it on every boot; this is for the install, before that runs.)
+chown gruzin:users /mnt/home/gruzin /mnt/home/gruzin/.cache 2>/dev/null || \
+  chown 1000:100 /mnt/home/gruzin /mnt/home/gruzin/.cache
 mount /dev/disk/by-label/DATA /mnt/mnt/data
 
 lsblk -f                              # sanity-check against the table above
