@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   programs.obs-studio = {
     enable = true;
     plugins = with pkgs.obs-studio-plugins; [
@@ -21,4 +25,34 @@
     krita
     feh
   ];
+
+  # Without this, video/audio MIME defaults are whatever last claimed them
+  # (e.g. audio/mpeg and audio/flac were defaulting to Audacity).
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = let
+      mpvTypes = [
+        "video/mp4"
+        "video/x-matroska"
+        "video/webm"
+        "video/quicktime"
+        "video/x-msvideo"
+        "video/mpeg"
+        "video/x-flv"
+        "video/3gpp"
+        "video/ogg"
+        "audio/mpeg"
+        "audio/mp4"
+        "audio/flac"
+        "audio/ogg"
+        "audio/x-wav"
+        "audio/wav"
+        "audio/aac"
+        "audio/x-aiff"
+        "audio/x-ms-wma"
+        "application/ogg"
+      ];
+    in
+      lib.genAttrs mpvTypes (_: ["mpv.desktop"]);
+  };
 }

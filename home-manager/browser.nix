@@ -55,4 +55,20 @@ in {
   };
 
   home.packages = [pkgs.chromium];
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html" = ["librewolf.desktop"];
+      "x-scheme-handler/http" = ["librewolf.desktop"];
+      "x-scheme-handler/https" = ["librewolf.desktop"];
+      "x-scheme-handler/about" = ["librewolf.desktop"];
+      "x-scheme-handler/unknown" = ["librewolf.desktop"];
+
+      # claude CLI's URL handler, installed to ~/.local/share/applications
+      # outside of nix; keep it declared here so it survives mimeapps.list
+      # being taken over by home-manager.
+      "x-scheme-handler/claude-cli" = ["claude-code-url-handler.desktop"];
+    };
+  };
 }
