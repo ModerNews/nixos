@@ -19,7 +19,12 @@ return {
         end
     },                             -- color picker (who would have guessed)
     "xiyaowong/link-visitor.nvim", -- Url opener (cmd)
-    "NvChad/nvim-colorizer.lua",   -- highlight color definitions with their color
+    {
+        "NvChad/nvim-colorizer.lua", -- highlight color definitions with their color
+        config = function()
+            require("colorizer").setup()
+        end,
+    },
     {
         'mcauley-penney/visual-whitespace.nvim',
         event = "ModeChanged *:[vV\22]", -- optionally, lazy load on entering visual mode
