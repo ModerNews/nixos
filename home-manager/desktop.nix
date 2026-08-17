@@ -12,7 +12,7 @@ in {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";
         before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = "hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
+        after_sleep_cmd = "sleep 2 && hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
         on_lock_cmd = "busctl call org.freedesktop.login1 /org/freedesktop/login1/session/auto org.freedesktop.login1.Session SetLockedHint b true";
         on_unlock_cmd = "busctl call org.freedesktop.login1 /org/freedesktop/login1/session/auto org.freedesktop.login1.Session SetLockedHint b false";
       };
@@ -25,7 +25,6 @@ in {
         {
           timeout = 330; # 5.5min — screen off
           on-timeout = "hyprctl dispatch 'hl.dsp.dpms(\"off\")'";
-          on-resume = "hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
         }
         {
           timeout = 1800; # 30min — suspend
