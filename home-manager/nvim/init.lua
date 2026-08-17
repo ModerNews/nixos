@@ -37,9 +37,12 @@ require("config.lazy")
 
 local scripts_dir = vim.fn.stdpath("config") .. "/lua/scripts"
 local script_names = {}
-for name, type in vim.fs.dir(scripts_dir) do
-    if type == "file" and name:match("%.lua$") and not name:match("^_") then
-        table.insert(script_names, name:sub(1, -5))
+for name in vim.fs.dir(scripts_dir) do
+    if name:match("%.lua$") and not name:match("^_") then
+        local stat = vim.uv.fs_stat(scripts_dir .. "/" .. name)
+        if stat and stat.type == "file" then
+            table.insert(script_names, name:sub(1, -5))
+        end
     end
 end
 table.sort(script_names)

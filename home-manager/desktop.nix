@@ -130,6 +130,55 @@ in {
       enable = true;
       autoStart = true;
     };
+
+    themes.gruzin-dark = {
+      meta = {
+        version = 1;
+        name = "Gruzin Dark";
+        description = "Matches the rest of the desktop theme";
+        variant = "dark";
+        inherits = "vicinae-dark";
+      };
+
+      colors = {
+        core = {
+          background = "#1a0808";
+          foreground = "#fefefe";
+          secondary_background = "#241212";
+          border = "#ad2a30";
+          accent = "#ad2a30";
+        };
+
+        accents = {
+          red = "#d83e4a";
+          orange = "#f36630";
+          yellow = "#ffcc33";
+          green = "#86a87e";
+          cyan = "#a1e7eb";
+          blue = "#4c6a84";
+          purple = "#d89fff";
+          magenta = "#e165a7";
+        };
+
+        list.item.selection = {
+          background = "#2a1418";
+          secondary_background = "colors.core.accent";
+        };
+
+        grid.item.background = "#241212";
+      };
+    };
+
+    settings = {
+      theme.dark.name = "gruzin-dark";
+
+      launcher_window = {
+        opacity = 0.65;
+        material = "blur";
+        rounding = 10;
+        client_side_decorations.border_width = 2;
+      };
+    };
   };
 
   programs.eww = {
