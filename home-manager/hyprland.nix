@@ -82,6 +82,15 @@ in {
     enable = true;
     configType = "lua";
 
+    systemd.variables = [
+      "DISPLAY"
+      "HYPRLAND_INSTANCE_SIGNATURE"
+      "WAYLAND_DISPLAY"
+      "XDG_CURRENT_DESKTOP"
+      "XDG_SESSION_TYPE"
+      "XDG_SESSION_ID"
+    ];
+
     settings = {
       mainMod._var = "SUPER";
       terminal._var = "kitty";
