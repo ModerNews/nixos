@@ -50,6 +50,20 @@
     # Other options beside 'alejandra' include 'nixpkgs-fmt'
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
+    # `nix develop` (or direnv, via .envrc) installs the pre-commit hooks
+    # declared in .pre-commit-config.yaml — that file alone does nothing
+    # until something points git at it, and that step writes into
+    # .git/hooks, which is local and un-tracked, so it can't be a build
+    # output of the flake itself.
+    devShells = forAllSystems (system: {
+      default = nixpkgs.legacyPackages.${system}.mkShell {
+        packages = [nixpkgs.legacyPackages.${system}.pre-commit];
+        shellHook = ''
+          pre-commit install --hook-type pre-commit --hook-type pre-push >/dev/null
+        '';
+      };
+    });
+
     # Your custom packages and modifications, exported as overlays
     overlays = import ./overlays {inherit inputs;};
     # Reusable nixos modules you might want to export

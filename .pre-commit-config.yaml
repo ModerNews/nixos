@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      - id: secrets-sops-encrypted
+        name: secrets are sops-encrypted
+        description: >-
+          Refuse to commit a secrets/*.yaml that isn't sops-encrypted (no
+          top-level `sops:` metadata block).
+        entry: scripts/check-secrets-encrypted.sh
+        language: script
+        files: ^secrets/[^/]+\.ya?ml$
+
+      - id: alejandra-fmt
+        name: nix fmt (alejandra)
+        entry: nix fmt --
+        language: system
+        files: \.nix$
+        pass_filenames: true
+
+      - id: nix-flake-check
+        name: nix flake check
+        entry: nix flake check --no-build
+        language: system
+        pass_filenames: false
+        files: \.nix$
+        stages: [pre-push]
