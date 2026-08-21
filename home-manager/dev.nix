@@ -38,5 +38,12 @@
     This applies regardless of which directory the session started in — check
     whether the task is "system component" work first, and go read that repo's
     AGENTS.md before proposing an approach.
+
+    ## Suggesting privilege escalation
+
+    When suggesting a command for the user to run themselves, use `run0`
+    instead of `sudo`, unless explicitly told otherwise. This does not apply
+    to commands the agent runs itself (e.g. via a Bash tool) — those should
+    still use `sudo`.
   '';
 }

@@ -1,4 +1,10 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
+  environment.systemPackages = [pkgs.wireguard-tools];
+
   networking = {
     hostName = "gruzin-desktop";
     useNetworkd = true;
