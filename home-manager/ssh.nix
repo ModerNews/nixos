@@ -50,7 +50,11 @@
       # Everything else on the internal 10.0.0.0/8 net, reached via the
       # bastion above. 10.0.0.0/24 is the local LAN (direct, no jump needed)
       # and 10.1.0.20 is the bastion itself (handled above) — both excluded.
-      "Match address 10.0.0.0/8,!10.0.0.0/24,!10.1.0.20" = {
+      #
+      # `Match address` is sshd_config-only; client ssh_config has no
+      # CIDR/address matching, so this has to be a Host glob instead —
+      # negated patterns work the same way there.
+      "10.* !10.0.0.* !10.1.0.20" = {
         User = "wms";
         IdentityFile = "~/.ssh/id_bastion";
         IdentitiesOnly = true;
