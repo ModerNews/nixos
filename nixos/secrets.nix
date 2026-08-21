@@ -45,6 +45,34 @@
         mode = "0400";
         path = "/home/gruzin/.kube/admin-proxy.yaml";
       };
+
+      # Private halves of the client identities wired up in
+      # home-manager/ssh.nix. Public halves aren't secret, so they're plain
+      # home.file entries in that same module instead of living here.
+      "ssh/id_ed25519" = {
+        owner = "gruzin";
+        group = "users";
+        mode = "0400";
+        path = "/home/gruzin/.ssh/id_ed25519";
+      };
+      "ssh/id_rsa" = {
+        owner = "gruzin";
+        group = "users";
+        mode = "0400";
+        path = "/home/gruzin/.ssh/id_rsa";
+      };
+      "ssh/id_github" = {
+        owner = "gruzin";
+        group = "users";
+        mode = "0400";
+        path = "/home/gruzin/.ssh/id_github";
+      };
+      "ssh/id_bastion" = {
+        owner = "gruzin";
+        group = "users";
+        mode = "0400";
+        path = "/home/gruzin/.ssh/id_bastion";
+      };
     };
   };
 
@@ -81,6 +109,16 @@
   #     admin-homelab: |
   #       ...
   #     admin-proxy: |
+  #       ...
+  #   ssh:
+  #     id_ed25519: |
+  #       -----BEGIN OPENSSH PRIVATE KEY-----
+  #       ...
+  #     id_rsa: |
+  #       ...
+  #     id_github: |
+  #       ...
+  #     id_bastion: |
   #       ...
   #
   # Until secrets/secrets.yaml is real, activation fails loudly — which is the

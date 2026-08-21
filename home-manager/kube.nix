@@ -1,4 +1,9 @@
 {...}: {
+  home.file.".kube/kubie.yaml".text = ''
+    prompt:
+      disable: true
+  '';
+
   # Cluster/context definitions and OIDC `exec` users — no embedded credentials,
   # so this is plain, declarative, git-tracked. The `kubectl oidc-login` plugin
   # (kubelogin-oidc, see infra.nix) fetches a token per-invocation; nothing here

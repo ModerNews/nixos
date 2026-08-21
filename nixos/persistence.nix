@@ -28,6 +28,7 @@
     "d /home/gruzin 0700 gruzin users -"
     "d /home/gruzin/.cache 0755 gruzin users -"
     "d /home/gruzin/.kube 0700 gruzin users -"
+    "d /home/gruzin/.ssh 0700 gruzin users -"
 
     "d /state/containers 0755 root root -"
     "d /state/containers/gruzin 0700 gruzin users -"

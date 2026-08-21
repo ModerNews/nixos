@@ -53,7 +53,7 @@
   # Manually activated (systemctl start wmswg)
   networking.wireguardNetdevs.wmswg = {
     privateKeyFile = config.sops.secrets."wireguard/wmswg".path;
-    address = ["10.0.0.4/32"];
+    address = ["10.10.0.4/32"];
     dns = ["10.10.0.1"];
     domains = ["~wmsdev.pl" "~wmsdev.local"];
     routes = [

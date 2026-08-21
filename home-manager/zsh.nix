@@ -35,6 +35,10 @@ in {
         name = "forgit";
         src = "${pkgs.zsh-forgit}/share/zsh/zsh-forgit";
       }
+      {
+        name = "nix";
+        src = "${pkgs.nix-zsh-completions}/share/zsh/plugins/nix";
+      }
     ];
 
     shellAliases = {
